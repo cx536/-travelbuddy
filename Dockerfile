@@ -5,7 +5,6 @@ ENV PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
     HOST=0.0.0.0 \
     PORT=7860 \
-    HF_ENDPOINT=https://hf-mirror.com \
     HOME=/home/appuser \
     HF_HOME=/home/appuser/.cache
 
@@ -22,7 +21,10 @@ COPY --chown=appuser:appuser public public
 
 USER appuser
 
-# 构建期下载 bge-small-zh 模型并预建向量库，避免容器冷启动时重算
+# 构建期从 Hugging Face 下载 bge-small-zh 模型并预建向量库，避免容器冷启动时重算
+# CI 在海外，默认走官方源；需要时可 --build-arg HF_ENDPOINT=https://hf-mirror.com
+ARG HF_ENDPOINT=https://huggingface.co
+ENV HF_ENDPOINT=${HF_ENDPOINT}
 RUN python -c "import sys; sys.path.insert(0, 'server'); \
 from rag_engine import RagEngine; \
 e = RagEngine(); \
