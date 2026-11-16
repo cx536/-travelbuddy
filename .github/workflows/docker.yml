@@ -21,11 +21,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          push: true
-          tags: |
-            ghcr.io/${{ github.repository_owner }}/travelbuddy:latest
-            ghcr.io/${{ github.repository_owner }}/travelbuddy:${{ github.sha }}
+      - name: Build image
+        run: |
+          IMAGE="ghcr.io/${{ github.repository_owner }}/travelbuddy"
+          docker build -t "$IMAGE:latest" -t "$IMAGE:${GITHUB_SHA}" . 2>&1 | tail -n 60
+
+      - name: Push image
+        run: |
+          IMAGE="ghcr.io/${{ github.repository_owner }}/travelbuddy"
+          docker push "$IMAGE:latest"
+          docker push "$IMAGE:${GITHUB_SHA}"
