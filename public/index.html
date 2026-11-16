@@ -1,0 +1,197 @@
+﻿﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+  <meta name="theme-color" content="#0f766e">
+  <meta name="description" content="TravelBuddy 智能旅游路线规划：输入城市、天数与偏好，自动生成可执行的逐日行程、地图动线、预算与天气提示。">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="TravelBuddy">
+  <title>TravelBuddy · 智能旅游路线规划</title>
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" href="/static/icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/static/icons/icon-192.png">
+  <link rel="stylesheet" href="/static/css/app.css?v=20261111l">
+<link rel="stylesheet" href="/static/css/extra.css?v=20261111l">
+</head>
+<body>
+<div class="app-shell">
+
+  <!-- ======= 桌面侧边栏（移动端隐藏） ======= -->
+  <aside class="rail">
+    <div class="rail__brand">
+      <span class="logo">🧭</span>
+      <div>
+        <b>TravelBuddy</b>
+        <small>SMART TRIP PLANNER</small>
+      </div>
+    </div>
+
+    <nav class="rail__nav">
+      <button class="nav-item" data-nav="explore"><span class="ico">🧳</span>探索目的地</button>
+      <button class="nav-item" data-nav="planner"><span class="ico">✨</span>智能规划</button>
+      <button class="nav-item" data-nav="trips"><span class="ico">📌</span>我的行程</button>
+      <button class="nav-item" data-nav="agent"><span class="ico">🤖</span>旅行助手</button>
+    </nav>
+
+    <div class="rail__foot">
+      <div class="rail__card">
+        <b>📍 已收录城市</b>
+        <p id="railCityCount">6 座城市 · 90+ 精选点位</p>
+        <button class="chip chip--soft" id="railExploreBtn">去看看 →</button>
+      </div>
+      <div class="rail__card">
+        <b>💡 一句话规划</b>
+        <p>「成都 3 天亲子游，预算 2000」也可以直接交给旅行助手。</p>
+        <button class="chip chip--soft" id="railAgentBtn">打开助手 →</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ======= 主工作区 ======= -->
+  <div class="workspace">
+    <header class="topbar">
+      <div class="topbar__brand"><span class="logo">🧭</span>TravelBuddy</div>
+      <div class="topbar__title">
+        探索目的地
+        <small id="pageSubtitle">选中城市，一键生成逐日行程</small>
+      </div>
+      <div class="topbar__actions">
+        <div class="mode-pill" id="modePill" title="当前渲染模式">
+          <span class="dot"></span><span id="modeText">Web 版</span>
+        </div>
+        <button class="icon-btn" id="deviceToggle" title="切换 Web / App 预览">📱</button>
+      </div>
+    </header>
+
+    <main class="main" id="mainScroll">
+
+      <!-- ---------- 探索 ---------- -->
+      <section class="view is-active" data-view="explore">
+        <div class="hero">
+          <div class="hero__tag">AI 行程引擎 · 离线可用</div>
+          <h1>下一站，<em>去哪儿？</em><br>把行程交给 TravelBuddy</h1>
+          <p>输入城市、天数与偏好，自动排出不折返的逐日路线，并算好时间、交通与预算。</p>
+          <label class="search">
+            <span>🔍</span>
+            <input id="exploreSearch" type="search" placeholder="搜索城市 / 景点，如「成都」「西湖」" autocomplete="off">
+          </label>
+          <div class="hero__stats">
+            <div><b id="statCities">6</b><span>支持城市</span></div>
+            <div><b id="statPois">90+</b><span>精选点位</span></div>
+            <div><b id="statRating">4.6</b><span>平均评分</span></div>
+            <div><b>100%</b><span>离线可跑</span></div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-head">
+            <h2>按偏好挑城市</h2>
+            <p>点选后会带入规划表单</p>
+          </div>
+          <div class="chip-line" id="prefQuick"></div>
+        </div>
+
+        <div class="section" style="padding-bottom:6px">
+          <div class="section-head">
+            <h2>热门目的地</h2>
+            <p id="cityTip">点击城市卡片即可生成行程</p>
+          </div>
+        </div>
+        <div class="city-grid" id="cityGrid"></div>
+
+        <div class="section" id="toolSection">
+          <div class="section-head">
+            <h2>出行工具</h2>
+            <p>跳转高德、订票与订酒店平台</p>
+          </div>
+          <div class="tool-grid">
+            <button class="tool-card" data-tool="map"><span class="tool-ico">🧭</span><b>地图导航</b><small>高德路线 / 公交地铁</small></button>
+            <button class="tool-card" data-tool="transit"><span class="tool-ico">🚄</span><b>交通出行</b><small>12306 / 飞猪 / 携程</small></button>
+            <button class="tool-card" data-tool="hotel"><span class="tool-ico">🏨</span><b>酒店住宿</b><small>美团 / 携程 / 去哪儿</small></button>
+            <button class="tool-card" data-tool="food"><span class="tool-ico">🍜</span><b>吃喝玩乐</b><small>点评 / 美团 / 抖音</small></button>
+          </div>
+        </div>
+
+        <div class="section" style="padding-top:22px">
+          <div class="section-head">
+            <h2>不知道怎么开口？</h2>
+            <p>试试这些说法</p>
+          </div>
+          <div class="quick-line" id="sampleLine">
+            <span>💬</span>「<b>成都 3 天亲子游，预算 2000</b>」—— 直接生成可执行行程
+          </div>
+        </div>
+        <div style="height:20px"></div>
+      </section>
+
+      <!-- ---------- 智能规划 ---------- -->
+      <section class="view" data-view="planner">
+        <div id="plannerStage"></div>
+        <div id="planResult"></div>
+        <div style="height:24px"></div>
+      </section>
+
+      <!-- ---------- 我的行程 ---------- -->
+      <section class="view" data-view="trips">
+        <div class="section" style="padding-top:10px">
+          <div class="section-head">
+            <h2>我的行程</h2>
+            <p id="tripCount">0 条收藏</p>
+          </div>
+        </div>
+        <div id="tripList"></div>
+        <div style="height:24px"></div>
+      </section>
+
+      <!-- ---------- 旅行助手 ---------- -->
+      <section class="view" data-view="agent">
+        <div class="chat-view">
+          <div class="chat-hero">
+            <div class="avatar">🤖</div>
+            <div>
+              <h4>TravelBuddy 行程管家 <span class="ai-badge" id="aiBadge" hidden>AI</span></h4>
+              <p id="chatHeroText">会解析城市、天数、预算、同行人，直接给出可执行路线</p>
+            </div>
+          </div>
+          <div id="chatLog"></div>
+        </div>
+        <div class="suggestions" id="chatSuggestions"></div>
+        <div class="fliggy-bar">
+          <span class="fliggy-bar__label">飞猪直订</span>
+          <button class="fliggy-chip" data-fliggy="https://www.fliggy.com/jipiao/">✈️ 机票</button>
+          <button class="fliggy-chip" data-fliggy="https://www.fliggy.com/huoche/">🚄 火车票</button>
+          <button class="fliggy-chip" data-fliggy="https://www.fliggy.com/jiudian/">🏨 酒店</button>
+          <button class="fliggy-chip" data-fliggy="https://www.fliggy.com/menpiao/">🎫 门票</button>
+        </div>
+        <div class="chat-compose">
+          <textarea id="chatInput" rows="1" placeholder="说出你的旅行需求，Shift+Enter 换行…" autocomplete="off"></textarea>
+          <button class="send-btn" id="chatSend">↑</button>
+        </div>
+        <div style="height:10px"></div>
+      </section>
+
+    </main>
+
+    <!-- ======= 底部标签栏（桌面隐藏） ======= -->
+    <nav class="tabbar">
+      <button class="tab-item is-active" data-nav="explore"><span class="ico">🧳</span>探索</button>
+      <button class="tab-item" data-nav="planner"><span class="ico">✨</span>规划</button>
+      <button class="tab-item" data-nav="trips"><span class="ico">📌</span>行程</button>
+      <button class="tab-item" data-nav="agent"><span class="ico">🤖</span>助手</button>
+    </nav>
+  </div>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modal__panel" id="modalPanel"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="/static/js/api.js?v=20261111l"></script>
+<script src="/static/js/itinerary.js?v=20261111l"></script>
+<script src="/static/js/app.js?v=20261111m"></script>
+<script src="/static/js/extra.js?v=20261111l"></script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+.env
+server/.env
+server/chroma_db/
+server/models/
+public/img/gen/
+__pycache__/
+*.pyc
+.venv/
+venv/
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store

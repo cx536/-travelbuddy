@@ -1,0 +1,10 @@
+.env
+server/.env
+server/chroma_db
+server/models
+public/img/gen
+__pycache__
+**/__pycache__
+*.pyc
+.vscode
+.git
