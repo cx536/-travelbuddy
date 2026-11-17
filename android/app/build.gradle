@@ -1,0 +1,38 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.cx.travelbuddy'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.cx.travelbuddy"
+        minSdk 23
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+    }
+
+    // 签名信息由 CI 生成，密码通过环境变量注入，避免把密钥提交到仓库
+    signingConfigs {
+        release {
+            storeFile file("../release.keystore")
+            storePassword System.getenv("KEYSTORE_PASSWORD") ?: "travelbuddy"
+            keyAlias System.getenv("KEY_ALIAS") ?: "travelbuddy"
+            keyPassword System.getenv("KEY_PASSWORD") ?: "travelbuddy"
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
